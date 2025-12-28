@@ -4,12 +4,6 @@
 ![Dashboard Preview](./dashboard_preview.png)
 
 ---
-5. [Data Engineering (SQL)](#-data-engineering-sql)
-6. [Key Insights & Business Impact](#-key-insights--business-impact)
-7. [How to Use This Dashboard](#-how-to-use-this-dashboard)
-8. [Author](#-author)
-
----
 
 ## 📉 Business Problem
 
