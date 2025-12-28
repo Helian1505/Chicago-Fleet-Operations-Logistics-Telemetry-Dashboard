@@ -4,12 +4,6 @@
 ![Dashboard Preview](./dashboard_preview.png)
 
 ---
-
-## 📝 Table of Contents
-1. [Business Problem](#-business-problem)
-2. [Project Objective](#-project-objective)
-3. [The Data](#-the-data)
-4. [Technical Solution Stack](#-technical-solution-stack)
 5. [Data Engineering (SQL)](#-data-engineering-sql)
 6. [Key Insights & Business Impact](#-key-insights--business-impact)
 7. [How to Use This Dashboard](#-how-to-use-this-dashboard)
@@ -62,14 +56,10 @@ The dashboard enables operations teams to:
 
 ## 🛠️ Technical Solution Stack
 
-- **Google BigQuery (SQL):**  
-  Advanced data extraction, cleansing, and feature engineering.
-- **Power BI:**  
-  Data modeling, DAX measures, and executive-level analytics.
-- **Power Query:**  
-  Data transformation, weekday normalization, and custom sorting.
-- **UI / UX:**  
-  Industrial *Dark Mode* theme optimized for high-contrast telemetry monitoring.
+- **Google BigQuery (SQL):** Advanced data extraction, cleansing, and feature engineering.
+- **Power BI:** Data modeling, DAX measures, and executive-level analytics.
+- **Power Query:** Data transformation, weekday normalization, and custom sorting.
+- **UI / UX:** Industrial *Dark Mode* theme optimized for high-contrast telemetry monitoring.
 
 ---
 
@@ -119,68 +109,71 @@ SELECT *
 FROM metrics
 WHERE avg_speed_mph < 85
   AND cost_per_mile < 40;
----
+```
 🔍 Key Insights & Business Impact
 1️⃣ Fleet Velocity & Congestion Impact
 
 Insight:
-The fleet operates at an average speed of 18.44 MPH, with significant performance degradation during peak congestion windows. Critical bottlenecks occur between 3:00 PM and 6:00 PM, where velocity consistently falls below the daily average.
+The fleet operates at an average speed of 18.44 MPH, with critical congestion between 3:00 PM and 6:00 PM.
 
 Business Impact:
-Reduced speed increases idle time, lowers trip frequency, and amplifies operational cost per mile.
+Lower velocity increases idle time, reduces trip frequency, and raises cost per mile.
 
 Actionable Recommendation:
-Prioritize short-distance trips in high-density zones during peak hours and redesign shift rotations to preserve throughput.
+Prioritize short-distance trips in high-density zones during peak hours.
 
 2️⃣ Operational Cost Per Mile (OCPM) Optimization
 
 Insight:
-The average OCPM is $4.36, with specific pickup–dropoff routes showing extreme cost spikes driven by toll infrastructure and congested zones.
+Average OCPM is $4.36, with cost spikes driven by tolls and congested pickup zones.
 
 Business Impact:
-Persistently high OCPM erodes margins and limits route-level profitability.
+High OCPM erodes margins and limits profitability.
 
 Actionable Recommendation:
 
-Renegotiate pricing for high-OCPM routes.
+Renegotiate pricing for high-OCPM routes
 
-Explore alternative, non-toll paths for non-priority fleet movements.
+Evaluate non-toll alternatives for non-priority trips
 
 3️⃣ Deadhead Risk & Trip Profitability
 
 Insight:
-Only 0.1% of trips fall into the high deadhead risk category, but these trips have a disproportionate impact on total margin.
+Only 0.1% of trips are high-risk, but they disproportionately affect margins.
 
 Business Impact:
-Even a small volume of low-yield long-distance trips can generate material revenue leakage over time.
+Small volumes of unprofitable trips accumulate into revenue leakage.
 
 Actionable Recommendation:
-Flag high-risk trips in real time and apply dynamic pricing or route reassignment strategies.
+Flag risky trips and apply dynamic pricing or reassignment.
 
 4️⃣ Payment Method & Gratuity Yield
 
 Insight:
-Trips paid via digital methods (Credit Card / Mobile) consistently generate higher gratuities than cash transactions.
+Digital payments generate higher gratuities than cash.
 
 Business Impact:
-Higher tip yield improves driver earnings and enhances revenue transparency.
+Higher tip yield improves driver earnings and transparency.
 
 Actionable Recommendation:
-Incentivize digital payment adoption to maximize gratuity yield and financial traceability.
+Promote digital payments through driver incentives.
 
 5️⃣ Executive-Level Decision Enablement
 
 Insight:
-The integration of OCPM, velocity, congestion, and payment metrics creates a unified Logistics Control Tower view.
+Combined metrics create a Logistics Control Tower view.
 
 Business Impact:
-Operations leaders gain real-time visibility into cost drivers, congestion exposure, and profitability risks.
+Faster, data-driven operational decisions.
 
 Actionable Recommendation:
-Use this dashboard as a daily monitoring tool and a strategic planning asset for routing, pricing, and capacity decisions.
+Use the dashboard for daily monitoring and strategic planning.
+
+
+👤 Author
 
 Developed by: Helian Fierro
 
-LinkedIn: (https://www.linkedin.com/in/helian-fierro-oyola-143798206/)
+LinkedIn: https://www.linkedin.com/in/helian-fierro-oyola-143798206/
 
-Portfolio / GitHub: (https://helian1505.github.io/Projects/)
+Portfolio / GitHub: https://helian1505.github.io/Projects/
