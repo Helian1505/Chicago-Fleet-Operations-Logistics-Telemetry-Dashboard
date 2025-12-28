@@ -1,67 +1,87 @@
-🚕 Chicago Fleet Operations: Logistics Telemetry & Efficiency Optimization
-📋 Table of Contents
-Business Problem
+# 🚕 Chicago Fleet Operations  
+## Logistics Telemetry & Efficiency Optimization
 
-Project Objective
+![Dashboard Preview](./dashboard_preview.png)
 
-The Data
+---
 
-Technical Solution Stack
+## 📝 Table of Contents
+1. [Business Problem](#-business-problem)
+2. [Project Objective](#-project-objective)
+3. [The Data](#-the-data)
+4. [Technical Solution Stack](#-technical-solution-stack)
+5. [Data Engineering (SQL)](#-data-engineering-sql)
+6. [Key Insights & Business Impact](#-key-insights--business-impact)
+7. [How to Use This Dashboard](#-how-to-use-this-dashboard)
+8. [Author](#-author)
 
-Data Engineering (SQL)
+---
 
-Insights & Strategic Recommendations
+## 📉 Business Problem
 
-How to Use this Dashboard
+Urban transportation fleets in **Chicago** operate in a highly dynamic and cost-sensitive environment.  
+Prior to this project, fleet operators lacked consolidated visibility into key operational risks, including:
 
-📉 1. Business Problem
-Urban transportation fleets in Chicago face a complex and high-cost environment. Before this project, the fleet lacked visibility into:
+- **Cost Inefficiency:** Elevated *Operational Cost Per Mile (OCPM)* on specific routes went undetected.
+- **Traffic Impact:** Limited understanding of how peak-hour congestion reduced fleet velocity (MPH) and increased idle time.
+- **Profitability Leakage:** Long-distance, low-yield trips (*Deadhead Trips*) were not quantified, gradually eroding margins.
 
-Cost Inefficiency: High Operational Cost Per Mile (OCPM) in specific routes went undetected.
+This lack of insight constrained data-driven operational and pricing decisions.
 
-Traffic Impact: No data on how peak-hour congestion directly degraded velocity (MPH) and increased idle time.
+---
 
-Profitability Leakage: "Deadhead" trips (long distances with low fares) were not quantified, affecting the overall margin.
+## 🎯 Project Objective
 
-🎯 2. Project Objective
-To design and implement a Logistics Control Tower dashboard that provides real-time visibility into fleet performance, allowing the operations team to:
+The goal of this project was to design and implement a **Logistics Control Tower** dashboard that delivers actionable insights into fleet performance.
 
-Monitor efficiency through a custom Efficiency Index (OCPM).
+The dashboard enables operations teams to:
 
-Analyze congestion patterns to optimize driver shifts.
+- Monitor efficiency using a custom **Efficiency Index (OCPM)**.
+- Identify congestion patterns to optimize driver schedules and shift allocation.
+- Minimize **Deadhead Risk** while maximizing **Gratuity Yield (Tips)**.
+- Support strategic decisions related to routing, pricing, and payment methods.
 
-Minimize Deadhead Risk and maximize Gratuity Yield (Tips).
+---
 
-📊 3. The Data
-Source: bigquery-public-data.chicago_taxi_trips (2024-2025 Dataset).
+## 📊 The Data
 
-Scale: +100,000 trip records.
+- **Source:** `bigquery-public-data.chicago_taxi_trips`
+- **Period:** 2024–2025
+- **Scale:** +100,000 trip records
 
-Key Engineered Metrics:
+### Key Engineered Metrics
 
-OCPM: Operational Cost Per Mile (Fare + Tolls / Distance).
+- **Operational Cost Per Mile (OCPM):**  
+  `(Fare + Tolls) / Distance`
+- **Fleet Velocity:**  
+  Average speed in Miles Per Hour (MPH)
+- **Deadhead Risk Rate:**  
+  Percentage of trips longer than 10 miles with a yield below `$1.50 / mile`
 
-Fleet Velocity: Average speed in Miles Per Hour (MPH).
+---
 
-Deadhead Risk: Flag for trips >10 miles with a yield < $1.5/mile.
+## 🛠️ Technical Solution Stack
 
-🛠️ 4. Technical Solution Stack
-Google BigQuery (SQL): Advanced data extraction and feature engineering.
+- **Google BigQuery (SQL):**  
+  Advanced data extraction, cleansing, and feature engineering.
+- **Power BI:**  
+  Data modeling, DAX measures, and executive-level analytics.
+- **Power Query:**  
+  Data transformation, weekday normalization, and custom sorting.
+- **UI / UX:**  
+  Industrial *Dark Mode* theme optimized for high-contrast telemetry monitoring.
 
-Power BI: Data modeling and DAX for business logic.
+---
 
-Power Query: Data cleaning and custom sorting for chronological weekdays.
+## 💻 Data Engineering (SQL)
 
-UI/UX: "Industrial Dark Mode" theme for high-contrast telemetry monitoring.
+Data processing was performed in **BigQuery** using layered **CTEs** to ensure scalability, readability, and analytical accuracy before ingestion into Power BI.
 
-💻 5. Data Engineering (SQL)
-The data was processed in BigQuery using CTEs to ensure scalability and clean metrics before importing to Power BI.
-
-SQL
-
-/* Final Query for Logistics Optimization 
-Script located at: /sql_scripts/logistics_query.sql 
+```sql
+/* Final Query for Logistics Optimization
+   Target: BigQuery Public Dataset
 */
+
 WITH base_trips AS (
   SELECT 
     unique_key AS trip_id,
@@ -78,43 +98,89 @@ WITH base_trips AS (
     (COALESCE(fare, 0) + COALESCE(tolls, 0)) AS base_operational_cost
   FROM `bigquery-public-data.chicago_taxi_trips.taxi_trips`
   WHERE trip_start_timestamp >= '2024-01-01'
-    AND trip_miles > 0.5 AND fare > 0
+    AND trip_miles > 0.5
+    AND fare > 0
     AND pickup_community_area IS NOT NULL 
     AND dropoff_community_area IS NOT NULL
 ),
+
 metrics AS (
   SELECT *,
     SAFE_DIVIDE(base_operational_cost, trip_miles) AS cost_per_mile,
     SAFE_DIVIDE(trip_miles, (trip_seconds / 3600)) AS avg_speed_mph,
-    CASE WHEN trip_miles > 10 AND (fare / trip_miles) < 1.5 THEN 1 ELSE 0 END AS high_deadhead_risk
+    CASE 
+      WHEN trip_miles > 10 AND (fare / trip_miles) < 1.5 THEN 1 
+      ELSE 0 
+    END AS high_deadhead_risk
   FROM base_trips
 )
-SELECT * FROM metrics 
-WHERE avg_speed_mph < 85 AND cost_per_mile < 40;
 
-💡 6. Insights & Strategic Recommendations (Verified)
-A. Velocity & Congestion Patterns
-Discovery: The Fleet Velocity averages 18.44 MPH. However, the Congestion Heatmap reveals "Red Zones" between 3:00 PM and 6:00 PM, where velocity drops significantly below the average.
+SELECT *
+FROM metrics
+WHERE avg_speed_mph < 85
+  AND cost_per_mile < 40;
+---
+🔍 Key Insights & Business Impact
+1️⃣ Fleet Velocity & Congestion Impact
 
-Recommendation: Implement shift rotations that prioritize "short-hop" trips in high-density zones during peak hours to maintain trip frequency.
+Insight:
+The fleet operates at an average speed of 18.44 MPH, with significant performance degradation during peak congestion windows. Critical bottlenecks occur between 3:00 PM and 6:00 PM, where velocity consistently falls below the daily average.
 
-B. Operational Cost Per Mile (OCPM)
-Discovery: The average OCPM stands at $4.36. The Efficiency Matrix identifies specific routes (e.g., Zone 8 to Zone 24) where costs spike due to infrastructure tolls.
+Business Impact:
+Reduced speed increases idle time, lowers trip frequency, and amplifies operational cost per mile.
 
-Recommendation: Renegotiate base rates for these high-OCPM routes or analyze alternative non-toll paths for non-priority fleet movements.
+Actionable Recommendation:
+Prioritize short-distance trips in high-density zones during peak hours and redesign shift rotations to preserve throughput.
 
-C. Profitability & Payment Yield
-Discovery: The Deadhead Risk Rate is controlled at 0.1%, but the Revenue Stream Analysis shows that "Credit Card" and "Mobile" payments generate significantly higher tips than "Cash".
+2️⃣ Operational Cost Per Mile (OCPM) Optimization
 
-Recommendation: Increase digital payment adoption through driver incentives to maximize total earnings and improve financial transparency.
+Insight:
+The average OCPM is $4.36, with specific pickup–dropoff routes showing extreme cost spikes driven by toll infrastructure and congested zones.
 
-🖥️ 7. How to Use this Dashboard
-Global Filters: Use the top button slicers to filter by Day of the Week and Company.
+Business Impact:
+Persistently high OCPM erodes margins and limits route-level profitability.
 
-Congestion Heatmap: Identify temporal bottlenecks (Hour vs. Day).
+Actionable Recommendation:
 
-Efficiency Matrix: Visualize the "Pure Heatmap" (color-coded) to find high-cost route patterns without numerical noise.
+Renegotiate pricing for high-OCPM routes.
 
-Infrastructure Leakage: Monitor the impact of tolls on different payment methods over time.
+Explore alternative, non-toll paths for non-priority fleet movements.
 
-Developed by: Helian Fierroo LinkedIn: (https://www.linkedin.com/in/helian-fierro-oyola-143798206/) Portfolio:(https://helian1505.github.io/Projects/)
+3️⃣ Deadhead Risk & Trip Profitability
+
+Insight:
+Only 0.1% of trips fall into the high deadhead risk category, but these trips have a disproportionate impact on total margin.
+
+Business Impact:
+Even a small volume of low-yield long-distance trips can generate material revenue leakage over time.
+
+Actionable Recommendation:
+Flag high-risk trips in real time and apply dynamic pricing or route reassignment strategies.
+
+4️⃣ Payment Method & Gratuity Yield
+
+Insight:
+Trips paid via digital methods (Credit Card / Mobile) consistently generate higher gratuities than cash transactions.
+
+Business Impact:
+Higher tip yield improves driver earnings and enhances revenue transparency.
+
+Actionable Recommendation:
+Incentivize digital payment adoption to maximize gratuity yield and financial traceability.
+
+5️⃣ Executive-Level Decision Enablement
+
+Insight:
+The integration of OCPM, velocity, congestion, and payment metrics creates a unified Logistics Control Tower view.
+
+Business Impact:
+Operations leaders gain real-time visibility into cost drivers, congestion exposure, and profitability risks.
+
+Actionable Recommendation:
+Use this dashboard as a daily monitoring tool and a strategic planning asset for routing, pricing, and capacity decisions.
+
+Developed by: Helian Fierro
+
+LinkedIn: (https://www.linkedin.com/in/helian-fierro-oyola-143798206/)
+
+Portfolio / GitHub: (https://helian1505.github.io/Projects/)
