@@ -53,8 +53,8 @@ The dashboard enables operations teams to:
 - **Google BigQuery (SQL):** Advanced data extraction, cleansing, and feature engineering.
 - **Power BI:** Data modeling, DAX measures, and executive-level analytics.
 - **Power Query:** Data transformation, weekday normalization, and custom sorting.
-- **UI / UX:** Industrial *Dark Mode* theme optimized for high-contrast telemetry monitoring.
-
+- **UI / UX:** Industrial  theme optimized for high-contrast telemetry monitoring.
+  
 ---
 
 ## 💻 Data Engineering (SQL)
