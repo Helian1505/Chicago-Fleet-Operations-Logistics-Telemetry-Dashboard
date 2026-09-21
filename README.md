@@ -168,6 +168,6 @@ Use the dashboard for daily monitoring and strategic planning.
 
 Developed by: Helian Fierro
 
-LinkedIn: https://www.linkedin.com/in/helian-fierro-oyola-143798206/
+LinkedIn: https://www.linkedin.com/in/helianfierro/
 
 Portfolio / GitHub: https://helian1505.github.io/Projects/
